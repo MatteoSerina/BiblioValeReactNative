@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { StyleSheet, View, Text, StatusBar } from "react-native";
 import { Font } from "expo";
+import * as Constants from '../storage/Constants';
 import MaterialButtonNewBook from "../components/MaterialButtonNewBook";
 import MaterialRightIconTextbox from "../components/MaterialRightIconTextbox";
 
@@ -35,10 +36,10 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#FEFEFE",
+    backgroundColor: Constants.WHITE,
   },
   title: {
-    color: "rgba(74,144,226,1)",
+    color: Constants.LIGHTBLUE,
     fontSize: 64,
     // fontFamily: "abeezee-regular"
   },

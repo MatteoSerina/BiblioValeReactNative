@@ -1,44 +1,128 @@
-import React, { Component, useState } from "react";
-import { StyleSheet, View, Text, Image } from "react-native";
+import React, { Component, useState, useEffect } from "react";
+import {
+  StyleSheet,
+  ScrollView,
+  View,
+  Text,
+  Image,
+  TextInput,
+  Button,
+} from "react-native";
 import { Font } from "expo";
+import * as Constants from "../storage/Constants";
+import GenrePicker from "../components/GenrePicker";
+import StatusPicker from "../components/StatusPicker";
 
-function Capitalize(str){
+function Capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+function GetSurname(str) {
+  try {
+    return str.split(",")[0];
+  } catch (error) {
+    return "";
+  }
+}
+function GetName(str) {
+  try {
+    return str.split(",")[1];
+  } catch (error) {
+    return "";
+  }
 }
 
 export default function BookDetail(props) {
   let currentBook = props.route.params.item;
-  
+
+  const [book, setBook] = useState(currentBook);
+
+  useEffect(() => {
+    setBook(currentBook);
+  });
+
+  function UpdateAuthor(newText) {
+    setBook((book.surname = GetSurname(newText)));
+    setBook((book.name = GetName(newText)));
+  }
+
   return (
     <View style={[styles.container, props.style]}>
-      <Text style={styles.titleStyle}>{currentBook.title}</Text>
-      <View style={styles.cardBody}>
-        <View style={styles.bodyContent}>
-          <Text style={styles.authorStyle}>
-            {Capitalize(currentBook.surname)}, {Capitalize(currentBook.name)}
-          </Text>          
-          <Text style={styles.mainInfoStyle}>{Capitalize(currentBook.genre)}</Text>
-          <Text style={styles.mainInfoStyle}>{Capitalize(currentBook.status)}</Text>
-          <Text style={styles.secondaryInfoStyle}>Anno: {currentBook.year == '0'? '' : currentBook.year}</Text>
-          <Text style={styles.secondaryInfoStyle}>ISBN10: {currentBook.isbn10}</Text>
-          <Text style={styles.secondaryInfoStyle}>ISBN13: {currentBook.isbn13}</Text>
-        </View>        
-      </View>
-      <Image
+      <TextInput
+        multiline
+        style={styles.titleStyle}
+        onChangeText={(newText) => setBook((book.title = newText))}
+      >
+        {currentBook.title}
+      </TextInput>
+      <ScrollView style={[styles.container, props.style]}>
+        <View style={styles.cardBody}>
+          <View style={styles.bodyContent}>
+            <TextInput
+              multiline
+              style={styles.authorStyle}
+              onChangeText={(newText) => UpdateAuthor(newText)}
+            >
+              {Capitalize(currentBook.surname)}, {Capitalize(currentBook.name)}
+            </TextInput>
+            <GenrePicker
+              style={styles.genrePickerStyle}
+              genre={(currentBook.genre, styles.genrePickerStyle)}
+            />
+            <StatusPicker
+              style={styles.genrePickerStyle}
+              genre={(Capitalize(currentBook.status), styles.genrePickerStyle)}
+            />
+            <View style={styles.keyValueStyle}>
+              <Text style={styles.secondaryInfoLabelStyle}>Anno: </Text>
+              <TextInput
+                style={styles.secondaryInfoInputStyle}
+                onChangeText={(newText) => setBook((book.year = newText))}
+              >
+                {currentBook.year == "0" ? "" : currentBook.year}
+              </TextInput>
+            </View>
+            <View style={styles.keyValueStyle}>
+              <Text style={styles.secondaryInfoLabelStyle}>ISBN10: </Text>
+              <TextInput
+                style={styles.secondaryInfoInputStyle}
+                onChangeText={(newText) => setBook((book.isbn10 = newText))}
+              >
+                {currentBook.isbn10}
+              </TextInput>
+            </View>
+            <View style={styles.keyValueStyle}>
+              <Text style={styles.secondaryInfoLabelStyle}>ISBN13: </Text>
+              <TextInput
+                style={styles.secondaryInfoInputStyle}
+                onChangeText={(newText) => setBook((book.isbn13 = newText))}
+              >
+                {currentBook.isbn13}
+              </TextInput>
+            </View>
+          </View>
+        </View>
+        <Image
           source={require("../../assets/img/cover_not_found.png")}
           style={styles.cardItemImagePlace}
         ></Image>
+        <Button
+          title="Test"
+          onPress={() => {
+            alert(book.surname + ", " + book.name);
+          }}
+        ></Button>
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#FEFEFE",
+    backgroundColor: Constants.WHITE,
     flexWrap: "nowrap",
     elevation: 1,
     borderRadius: 2,
-    borderColor: "#616161",
+    borderColor: Constants.GRAY,
     borderWidth: 1,
     overflow: "hidden",
     flexDirection: "column",
@@ -46,7 +130,7 @@ const styles = StyleSheet.create({
   },
   cardBody: {
     flexDirection: "row",
-    justifyContent: "space-between",    
+    justifyContent: "space-between",
   },
   bodyContent: {
     flex: 1,
@@ -54,40 +138,69 @@ const styles = StyleSheet.create({
     paddingTop: 24,
   },
   titleStyle: {
-    color: "rgba(74,144,226,1)",
+    color: Constants.LIGHTBLUE,
     paddingBottom: 12,
     paddingTop: 12,
     fontSize: 28,
     alignSelf: "center",
-    textAlign: "center"
+    textAlign: "center",
     //   fontFamily: "roboto-regular"
   },
   authorStyle: {
-    color: "#616161",
+    color: Constants.BLACK,
     opacity: 1,
     fontSize: 24,
-    marginBottom: 5
+    marginBottom: 5,
     //   fontFamily: "roboto-regular",
   },
   mainInfoStyle: {
-    color: "#616161",
+    color: Constants.BLACK,
     opacity: 1,
     fontSize: 22,
     fontStyle: "italic",
-    marginBottom: 5
+    marginBottom: 5,
     //   fontFamily: "roboto-regular",
   },
-  secondaryInfoStyle: {
-    color: "#616161",
+  genrePickerStyle: {
+    color: Constants.BLACK,
+    opacity: 1,
+    fontSize: 44,
+    fontStyle: "italic",
+    marginBottom: 5,
+    //   fontFamily: "roboto-regular",
+  },
+  statusPickerStyle: {
+    color: Constants.BLACK,
+    opacity: 1,
+    fontSize: 44,
+    fontStyle: "italic",
+    marginBottom: 5,
+    //   fontFamily: "roboto-regular",
+  },
+  keyValueStyle: {
+    flexDirection: "row",
+  },
+  secondaryInfoLabelStyle: {
+    color: Constants.BLACK,
     opacity: 0.7,
     fontSize: 14,
-    marginTop: 5   
+    padding: 2,
+    width: "18%",
+    textAlignVertical: "bottom",
+  },
+  secondaryInfoInputStyle: {
+    color: Constants.BLACK,
+    opacity: 0.7,
+    fontSize: 14,
+    padding: 2,
+    borderBottomWidth: 1,
+    textAlignVertical: "bottom",
     // fontFamily: "roboto-regular",
   },
   cardItemImagePlace: {
-    width: '50%',
-    backgroundColor: "#616161",
+    width: "50%",
+    backgroundColor: Constants.GRAY,
     margin: 16,
-    alignSelf: "center"
+    alignSelf: "center",
   },
 });
