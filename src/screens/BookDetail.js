@@ -6,29 +6,34 @@ import {
   Text,
   Image,
   TextInput,
+  TouchableOpacity,
   Button,
 } from "react-native";
 import { Font } from "expo";
 import * as Constants from "../storage/Constants";
 import GenrePicker from "../components/GenrePicker";
 import StatusPicker from "../components/StatusPicker";
+import * as DbAdapter from "../storage/DbAdapter";
 
 function Capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 function GetSurname(str) {
   try {
-    return str.split(",")[0];
+    return str.split(",")[0].trim();
   } catch (error) {
     return "";
   }
 }
 function GetName(str) {
   try {
-    return str.split(",")[1];
+    return str.split(",")[1].trim();
   } catch (error) {
     return "";
   }
+}
+function SaveBook(book) {
+  DbAdapter.UpsertBook(book).then((response) => console.warn(JSON.stringify(response)));
 }
 
 export default function BookDetail(props) {
@@ -65,12 +70,16 @@ export default function BookDetail(props) {
               {Capitalize(currentBook.surname)}, {Capitalize(currentBook.name)}
             </TextInput>
             <GenrePicker
-              style={styles.genrePickerStyle}
-              genre={(currentBook.genre, styles.genrePickerStyle)}
+              style={styles.pickerStyle}
+              genre={(currentBook.genre, styles.pickerStyle)}
+              selectedGenre={currentBook.genre}
+              onChangeVal={(newText) => setBook((book.genre = newText))}
             />
             <StatusPicker
-              style={styles.genrePickerStyle}
-              genre={(Capitalize(currentBook.status), styles.genrePickerStyle)}
+              style={styles.pickerStyle}
+              status={(Capitalize(currentBook.status), styles.pickerStyle)}
+              selectedStatus={currentBook.status}
+              onChangeVal={(newText) => setBook((book.status = newText))}
             />
             <View style={styles.keyValueStyle}>
               <Text style={styles.secondaryInfoLabelStyle}>Anno: </Text>
@@ -105,13 +114,30 @@ export default function BookDetail(props) {
           source={require("../../assets/img/cover_not_found.png")}
           style={styles.cardItemImagePlace}
         ></Image>
+      </ScrollView>
+      <View style={styles.footer}>
+        <TouchableOpacity
+          style={{ width: "40%" }}
+          onPress={(queryString) => SaveBook(book)}
+        >
+          <Text style={styles.saveButton}>Salva</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{ width: "40%" }}
+          onPress={() => alert("Delete")}
+        >
+          <Text style={styles.deleteButton}>Elimina</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={{ marginTop: 10 }}>
         <Button
           title="Test"
+          style={{ margin: 50 }}
           onPress={() => {
-            alert(book.surname + ", " + book.name);
+            alert(JSON.stringify(book));
           }}
         ></Button>
-      </ScrollView>
+      </View>
     </View>
   );
 }
@@ -161,15 +187,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     //   fontFamily: "roboto-regular",
   },
-  genrePickerStyle: {
-    color: Constants.BLACK,
-    opacity: 1,
-    fontSize: 44,
-    fontStyle: "italic",
-    marginBottom: 5,
-    //   fontFamily: "roboto-regular",
-  },
-  statusPickerStyle: {
+  pickerStyle: {
     color: Constants.BLACK,
     opacity: 1,
     fontSize: 44,
@@ -202,5 +220,30 @@ const styles = StyleSheet.create({
     backgroundColor: Constants.GRAY,
     margin: 16,
     alignSelf: "center",
+  },
+  footer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 5,
+  },
+  saveButton: {
+    borderColor: Constants.LIGHTBLUE,
+    borderWidth: 3,
+    borderRadius: 10,
+    fontSize: 24,
+    textAlign: "center",
+    color: Constants.LIGHTBLUE,
+    padding: 5,
+    marginLeft: 30,
+  },
+  deleteButton: {
+    borderColor: Constants.RED,
+    borderWidth: 3,
+    borderRadius: 10,
+    fontSize: 24,
+    textAlign: "center",
+    color: Constants.RED,
+    padding: 5,
+    marginRight: 30,
   },
 });

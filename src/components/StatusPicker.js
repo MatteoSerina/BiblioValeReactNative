@@ -5,6 +5,10 @@ import { Font } from "expo";
 import * as Constants from "../storage/Constants";
 import * as DbAdapter from "../storage/DbAdapter";
 
+function Capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
 export default function StatusPicker(props) {
   const [status, setStatus] = useState([
     {
@@ -32,14 +36,13 @@ export default function StatusPicker(props) {
       "name": "Wish list"
     }
   ]);
-  const [selectedStatus, setSelectedStatus] = useState(props.status);
-  
+    
   return (
     <View>
       <Picker
-        selectedValue={selectedStatus}
+        selectedValue={Capitalize(props.selectedStatus)}
         style={props.style}
-        onValueChange={(itemValue, itemIndex) => setSelectedStatus(itemValue)}
+        onValueChange={(itemValue, itemIndex) => props.onChangeVal(itemValue, itemIndex)}
       >
         {
           status.map((item,key) => (

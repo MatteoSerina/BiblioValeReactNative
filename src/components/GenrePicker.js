@@ -7,14 +7,12 @@ import * as DbAdapter from "../storage/DbAdapter";
 
 export default function GenrePicker(props) {
   const [genres, setGenres] = useState([]);
-  const [selectedGenre, setSelectedGenre] = useState(props.genre);
 
   useEffect(() => {
     DbAdapter.GetAllGenres()
       .then((response) => response.json())
       .then((responseJson) => {
         setGenres(responseJson);
-        console.warn(props.style)
       })
       .catch((error) => {
         console.error(error);
@@ -24,9 +22,9 @@ export default function GenrePicker(props) {
   return (
     <View>
       <Picker
-        selectedValue={selectedGenre}
+        selectedValue={props.selectedGenre}
         style={props.style}
-        onValueChange={(itemValue, itemIndex) => setSelectedGenre(itemValue)}
+        onValueChange={(itemValue, itemIndex) => props.onChangeVal(itemValue, itemIndex)}
       >
         {
           genres.map((item,key) => (
