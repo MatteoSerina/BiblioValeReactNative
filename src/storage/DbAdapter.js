@@ -14,10 +14,26 @@ export async function GetAllGenres() {
   return await fetch(queryString);
 }
 
+export async function GetAuthors(book) {
+  let queryString = new URL(Constants.DB_ENPOINT);
+  queryString.searchParams.append("fName", "getAuthors");
+  queryString.searchParams.append("surname", book.surname);
+  queryString.searchParams.append("name", book.name);
+  return await fetch(queryString);
+}
+
+export async function CreateAuthor(book) {
+  let queryString = new URL(Constants.DB_ENPOINT);
+  queryString.searchParams.append("fName", "createAuthor");
+  queryString.searchParams.append("surname", book.surname);
+  queryString.searchParams.append("name", book.name);
+  return await fetch(queryString);
+}
+
 export async function UpsertBook(book) {
   let queryString = new URL(Constants.DB_ENPOINT);
   if (book.id == "" || book.id === undefined) {
-    //INSERT    
+    //INSERT
     queryString.searchParams.append("fName", "createBook");
     queryString.searchParams.append("title", book.title);
     queryString.searchParams.append("genre", book.genre);

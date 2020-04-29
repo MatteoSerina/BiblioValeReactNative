@@ -8,12 +8,24 @@ import {
   TextInput,
   TouchableOpacity,
   Button,
+  ActivityIndicator,
+  Alert,
 } from "react-native";
+import Dialog, {
+  DialogTitle,
+  DialogContent,
+  DialogFooter,
+  DialogButton,
+  SlideAnimation,
+  ScaleAnimation,
+} from "react-native-popup-dialog";
 import { Font } from "expo";
 import * as Constants from "../storage/Constants";
 import GenrePicker from "../components/GenrePicker";
 import StatusPicker from "../components/StatusPicker";
-import * as DbAdapter from "../storage/DbAdapter";
+import ModelNotify from "../components/ModelNotify";
+
+import * as BookModel from "../models/bookModel";
 
 function Capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -32,14 +44,15 @@ function GetName(str) {
     return "";
   }
 }
-function SaveBook(book) {
-  DbAdapter.UpsertBook(book).then((response) => console.warn(JSON.stringify(response)));
-}
 
 export default function BookDetail(props) {
   let currentBook = props.route.params.item;
 
   const [book, setBook] = useState(currentBook);
+  const [isDialogOn, setDialog] = useState(false);
+  const [dialogTitle, setDialogTitle] = useState("");
+  const [modelResponse, setModelResponse] = useState("");
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
     setBook(currentBook);
@@ -50,6 +63,36 @@ export default function BookDetail(props) {
     setBook((book.name = GetName(newText)));
   }
 
+  function Save(book) {
+    if (!ValidBook(book)) return false;
+    setLoading(true);
+    BookModel.SaveBook(book).then((response) => {
+      setModelResponse(response);
+      setDialogTitle("Salva");
+      setLoading(false);
+      setDialog(true);
+    });
+  }
+
+  function HideDialog() {
+    setDialog(false);
+  }
+
+  function ValidBook(book) {
+    if (book.title === undefined || book.title.length == 0) {
+      Alert.alert("Errore validazione", "Inserire il titolo", [], {
+        cancelable: true 
+      });
+      return false;
+    }
+    if (isNaN(book.year) || book.year.length != 4) {
+      Alert.alert("Errore validazione", "Controllare il valore dell'anno", [], {
+        cancelable: true 
+      });
+      return false;
+    }
+    return true;
+  }
   return (
     <View style={[styles.container, props.style]}>
       <TextInput
@@ -85,6 +128,7 @@ export default function BookDetail(props) {
               <Text style={styles.secondaryInfoLabelStyle}>Anno: </Text>
               <TextInput
                 style={styles.secondaryInfoInputStyle}
+                maxLength={4}
                 onChangeText={(newText) => setBook((book.year = newText))}
               >
                 {currentBook.year == "0" ? "" : currentBook.year}
@@ -94,6 +138,7 @@ export default function BookDetail(props) {
               <Text style={styles.secondaryInfoLabelStyle}>ISBN10: </Text>
               <TextInput
                 style={styles.secondaryInfoInputStyle}
+                maxLength={10}
                 onChangeText={(newText) => setBook((book.isbn10 = newText))}
               >
                 {currentBook.isbn10}
@@ -103,6 +148,7 @@ export default function BookDetail(props) {
               <Text style={styles.secondaryInfoLabelStyle}>ISBN13: </Text>
               <TextInput
                 style={styles.secondaryInfoInputStyle}
+                maxLength={13}
                 onChangeText={(newText) => setBook((book.isbn13 = newText))}
               >
                 {currentBook.isbn13}
@@ -118,7 +164,7 @@ export default function BookDetail(props) {
       <View style={styles.footer}>
         <TouchableOpacity
           style={{ width: "40%" }}
-          onPress={(queryString) => SaveBook(book)}
+          onPress={(queryString) => Save(book)}
         >
           <Text style={styles.saveButton}>Salva</Text>
         </TouchableOpacity>
@@ -138,6 +184,21 @@ export default function BookDetail(props) {
           }}
         ></Button>
       </View>
+      <ModelNotify
+        title={dialogTitle}
+        response={modelResponse}
+        isDialogOn={isDialogOn}
+        closeDialog={HideDialog}
+      />
+      {isLoading && (
+        <View style={styles.spinner} pointerEvents={"none"}>
+          <ActivityIndicator
+            size={100}
+            animating={isLoading}
+            color={Constants.LIGHTBLUE}
+          />
+        </View>
+      )}
     </View>
   );
 }
@@ -245,5 +306,16 @@ const styles = StyleSheet.create({
     color: Constants.RED,
     padding: 5,
     marginRight: 30,
+  },
+  spinner: {
+    position: "absolute",
+    elevation: 1,
+    opacity: 0.8,
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+    justifyContent: "center",
+    backgroundColor: "#f3f3f3",
   },
 });
