@@ -5,7 +5,8 @@ import { DrawerItem, createDrawerNavigator } from "@react-navigation/drawer";
 import { useSafeArea } from "react-native-safe-area-context";
 
 import Home from "../screens/Home";
-import BookList from "../screens/BookList";
+// import BookList from "../screens/BookList";
+import Library from '../screens/Library';
 import BookDetail from '../screens/BookDetail';
 
 const Drawer = createDrawerNavigator();
@@ -41,7 +42,7 @@ function CustomDrawerContent({ drawerPosition, navigation }) {
         label="Catalogo"
         style={styles.menuItem}
         onPress={() => {
-          navigation.navigate("BookList");
+          navigation.navigate("Library");
         }}
       />
       <DrawerItem
@@ -67,7 +68,7 @@ export default function DrawerNavigator() {
         drawerContent={(props) => <CustomDrawerContent {...props} />}
       >
         <Drawer.Screen name="Home" component={Home}/>
-        <Drawer.Screen name="BookList" component={BookList}/>
+        <Drawer.Screen name="Library" component={Library}/>
         <Drawer.Screen name="BookDetail" component={BookDetail}/>
         {/* <Drawer.Screen name="Blog" component={Blog} /> */}
       </Drawer.Navigator>

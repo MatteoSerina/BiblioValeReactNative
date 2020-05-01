@@ -23,9 +23,9 @@ import { Font } from "expo";
 import * as Constants from "../storage/Constants";
 import GenrePicker from "../components/GenrePicker";
 import StatusPicker from "../components/StatusPicker";
-import ModelNotify from "../components/ModelNotify";
+// import ModelNotify from "../components/ModelNotify";
 
-import * as BookModel from "../models/bookModel";
+import * as BookModel from "../models/BookModel";
 
 function Capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -49,9 +49,6 @@ export default function BookDetail(props) {
   let currentBook = props.route.params.item;
 
   const [book, setBook] = useState(currentBook);
-  const [isDialogOn, setDialog] = useState(false);
-  const [dialogTitle, setDialogTitle] = useState("");
-  const [modelResponse, setModelResponse] = useState("");
   const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -63,36 +60,84 @@ export default function BookDetail(props) {
     setBook((book.name = GetName(newText)));
   }
 
-  function Save(book) {
-    if (!ValidBook(book)) return false;
+  async function CreateAuthor(book) {
     setLoading(true);
-    BookModel.SaveBook(book).then((response) => {
-      setModelResponse(response);
-      setDialogTitle("Salva");
-      setLoading(false);
-      setDialog(true);
-    });
+    let result = await BookModel.CreateAuthor(book);
+    setLoading(false);
+
+    if (result.status_id == "0") {
+      Alert.alert("Nuovo autore", "Autore creato correttamente");
+      return true;
+    }
+    Alert.alert("Errore", "Nuovo autore non creato");
+    return false;
   }
 
-  function HideDialog() {
-    setDialog(false);
+  async function SaveBook(book) {
+    setLoading(true);
+    let result = await BookModel.SaveBook(book);
+    setLoading(false);
+    if (result.status_id == "0") {
+      Alert.alert("Salvataggio", "Libro salvato", [], { cancelable: true });
+      return true;
+    }
+    Alert.alert("Errore", "Libro non salvato");
+    return false;
+  }
+
+  async function Save(book) {
+    if (!ValidBook(book)) return false;
+
+    setLoading(true);
+    let authorExists = await BookModel.ChechAuthorExists(book);
+    setLoading(false);
+
+    if (authorExists) {
+      SaveBook(book);
+    } else {
+      Alert.alert(
+        "Autore inesistente",
+        "Vuoi creare l'autore " + book.surname + ", " + book.name + "?",
+        [
+          {
+            text: "Sì",
+            onPress: () => {
+              CreateAuthor(book).then((authorCreated) => {
+                if (authorCreated) {
+                  SaveBook(book);
+                }
+              });
+            },
+            style: "default",
+          },
+          {
+            text: "No",
+            onPress: () => {
+              Alert.alert("Salvataggio interrotto", "Nuovo autore non creato");
+              return false;
+            },
+          },
+        ]
+      );
+    }
   }
 
   function ValidBook(book) {
     if (book.title === undefined || book.title.length == 0) {
       Alert.alert("Errore validazione", "Inserire il titolo", [], {
-        cancelable: true 
+        cancelable: true,
       });
       return false;
     }
     if (isNaN(book.year) || book.year.length != 4) {
       Alert.alert("Errore validazione", "Controllare il valore dell'anno", [], {
-        cancelable: true 
+        cancelable: true,
       });
       return false;
     }
     return true;
   }
+
   return (
     <View style={[styles.container, props.style]}>
       <TextInput
@@ -184,12 +229,12 @@ export default function BookDetail(props) {
           }}
         ></Button>
       </View>
-      <ModelNotify
+      {/* <ModelNotify
         title={dialogTitle}
         response={modelResponse}
         isDialogOn={isDialogOn}
         closeDialog={HideDialog}
-      />
+      /> */}
       {isLoading && (
         <View style={styles.spinner} pointerEvents={"none"}>
           <ActivityIndicator
