@@ -5,8 +5,8 @@ import { DrawerItem, createDrawerNavigator } from "@react-navigation/drawer";
 import { useSafeArea } from "react-native-safe-area-context";
 
 import Home from "../screens/Home";
-// import BookList from "../screens/BookList";
 import Library from '../screens/Library';
+import SearchBookResult from '../screens/SearchBookResult';
 import BookDetail from '../screens/BookDetail';
 
 const Drawer = createDrawerNavigator();
@@ -70,6 +70,7 @@ export default function DrawerNavigator() {
         <Drawer.Screen name="Home" component={Home}/>
         <Drawer.Screen name="Library" component={Library}/>
         <Drawer.Screen name="BookDetail" component={BookDetail}/>
+        <Drawer.Screen name="SearchBookResult" component={SearchBookResult}/>
         {/* <Drawer.Screen name="Blog" component={Blog} /> */}
       </Drawer.Navigator>
     </NavigationContainer>

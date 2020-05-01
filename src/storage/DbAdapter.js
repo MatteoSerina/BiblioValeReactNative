@@ -8,6 +8,13 @@ export async function GetAllBooks() {
   return await fetch(queryString);
 }
 
+export async function SearchBook(searchString) {
+  let queryString = new URL(Constants.DB_ENPOINT);
+  queryString.searchParams.append("fName", "searchBook");
+  queryString.searchParams.append("queryString", searchString);
+  return await fetch(queryString);
+}
+
 export async function GetAllGenres() {
   let queryString = new URL(Constants.DB_ENPOINT);
   queryString.searchParams.append("fName", "getAllGenres");

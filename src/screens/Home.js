@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, StatusBar } from "react-native";
 import { Font } from "expo";
 import * as Constants from '../storage/Constants';
 import MaterialButtonNewBook from "../components/MaterialButtonNewBook";
-import MaterialRightIconTextbox from "../components/MaterialRightIconTextbox";
+import SearchBar from "../components/SearchBar";
 
 function Home(props) {
   return (
@@ -12,9 +12,9 @@ function Home(props) {
         <Text style={styles.title}>BiblioVale</Text>
       </View>
       <View style={styles.biblioValeColumnFiller}>
-        <MaterialRightIconTextbox
+        <SearchBar {...props}
           style={styles.materialRightIconTextbox}
-        ></MaterialRightIconTextbox>
+        ></SearchBar>
       </View>
       <View style={styles.newBookView}>
         <MaterialButtonNewBook

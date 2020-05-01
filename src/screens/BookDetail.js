@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   ScrollView,
@@ -11,15 +11,6 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
-import Dialog, {
-  DialogTitle,
-  DialogContent,
-  DialogFooter,
-  DialogButton,
-  SlideAnimation,
-  ScaleAnimation,
-} from "react-native-popup-dialog";
-import { Font } from "expo";
 import * as Constants from "../storage/Constants";
 import GenrePicker from "../components/GenrePicker";
 import StatusPicker from "../components/StatusPicker";
@@ -209,7 +200,7 @@ export default function BookDetail(props) {
       <View style={styles.footer}>
         <TouchableOpacity
           style={{ width: "40%" }}
-          onPress={(queryString) => Save(book)}
+          onPress={() => Save(book)}
         >
           <Text style={styles.saveButton}>Salva</Text>
         </TouchableOpacity>

@@ -1,26 +1,28 @@
 import "react-native-gesture-handler";
 import React, { useState, useEffect } from "react";
+import { useNavigation } from "@react-navigation/native";
 import {
   StyleSheet,
   View,
-  Text,
   SafeAreaView,
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
+  Text,
 } from "react-native";
 
 import * as BookModel from "../models/BookModel";
 import BookList from "../components/BookList";
 
-export default function Library({ navigation }) {
+export default function SearchBookResult(props) {
+  const navigation = useNavigation();
   const [dataSource, setDataSource] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       setIsLoading(true);
-      BookModel.GetAllBooks()
+      BookModel.SearchBook(props.route.params.queryString)
         .then((responseJson) => {
           setDataSource(responseJson);
           setIsLoading(false);
@@ -33,10 +35,10 @@ export default function Library({ navigation }) {
 
     // Return the function to unsubscribe from the event so it gets removed on unmount
     return unsubscribe;
-  }, []);
+  },);
 
   function refreshData() {
-    BookModel.GetAllBooks()
+    BookModel.SearchBook(props.route.params.queryString)
       .then((responseJson) => {
         setDataSource(responseJson);
         setIsLoading(false);

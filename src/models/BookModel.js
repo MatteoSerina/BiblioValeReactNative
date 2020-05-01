@@ -8,6 +8,14 @@ export async function GetAllBooks() {
   }
 }
 
+export async function SearchBook(queryString) {
+  try {
+    return await DbAdapter.SearchBook(queryString).then((response) => response.json());
+  } catch (error) {
+    console.warn(error);
+  }
+}
+
 export async function SaveBook(book) {
   try {
     return await DbAdapter.UpsertBook(book).then((response) => response.json());
