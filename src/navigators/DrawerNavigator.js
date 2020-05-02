@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, ScrollView } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { DrawerItem, createDrawerNavigator } from "@react-navigation/drawer";
 import { useSafeArea } from "react-native-safe-area-context";
+import * as Constants from "../storage/Constants";
 
 import Home from "../screens/Home";
 import Library from '../screens/Library';
@@ -35,7 +36,7 @@ function CustomDrawerContent({ drawerPosition, navigation }) {
         label="Nuovo libro"
         style={styles.menuItem}
         onPress={() => {
-          navigation.navigate("Blog");
+          navigation.navigate("BookDetail", {item: JSON.parse(JSON.stringify(Constants.EMPTY_BOOK))});
         }}
       />
       <DrawerItem
@@ -79,7 +80,8 @@ export default function DrawerNavigator() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
+    flex: 1,
+    fontSize: 18
   },
   menuItem:{
     fontWeight: 'bold',

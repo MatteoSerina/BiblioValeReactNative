@@ -8,9 +8,19 @@ export async function GetAllBooks() {
   }
 }
 
+export async function SearchHint() {
+  try {
+    return await DbAdapter.SearchHint().then((response) => response.json());
+  } catch (error) {
+    console.warn(error);
+  }
+}
+
 export async function SearchBook(queryString) {
   try {
-    return await DbAdapter.SearchBook(queryString).then((response) => response.json());
+    return await DbAdapter.SearchBook(queryString).then((response) =>
+      response.json()
+    );
   } catch (error) {
     console.warn(error);
   }

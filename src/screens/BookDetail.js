@@ -67,9 +67,12 @@ export default function BookDetail(props) {
   async function SaveBook(book) {
     setLoading(true);
     let result = await BookModel.SaveBook(book);
+    console.log("result: " + JSON.stringify(book));
+    console.log("result: " + JSON.stringify(result));
     setLoading(false);
     if (result.status_id == "0") {
       Alert.alert("Salvataggio", "Libro salvato", [], { cancelable: true });
+      props.navigation.goBack();
       return true;
     }
     Alert.alert("Errore", "Libro non salvato");
@@ -120,7 +123,7 @@ export default function BookDetail(props) {
       });
       return false;
     }
-    if (isNaN(book.year) || book.year.length != 4) {
+    if (book.year != "" && (isNaN(book.year) || book.year.length != 4)) {
       Alert.alert("Errore validazione", "Controllare il valore dell'anno", [], {
         cancelable: true,
       });
@@ -134,6 +137,7 @@ export default function BookDetail(props) {
       <TextInput
         multiline
         style={styles.titleStyle}
+        placeholder="Titolo"
         onChangeText={(newText) => setBook((book.title = newText))}
       >
         {currentBook.title}
@@ -144,9 +148,14 @@ export default function BookDetail(props) {
             <TextInput
               multiline
               style={styles.authorStyle}
+              placeholder="Cognome, Nome"
               onChangeText={(newText) => UpdateAuthor(newText)}
             >
-              {Capitalize(currentBook.surname)}, {Capitalize(currentBook.name)}
+              {currentBook.surname != "" &&
+                currentBook.name != "" &&
+                Capitalize(currentBook.surname) +
+                  ", " +
+                  Capitalize(currentBook.name)}
             </TextInput>
             <GenrePicker
               style={styles.pickerStyle}
@@ -198,10 +207,7 @@ export default function BookDetail(props) {
         ></Image>
       </ScrollView>
       <View style={styles.footer}>
-        <TouchableOpacity
-          style={{ width: "40%" }}
-          onPress={() => Save(book)}
-        >
+        <TouchableOpacity style={{ width: "40%" }} onPress={() => Save(book)}>
           <Text style={styles.saveButton}>Salva</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -210,15 +216,6 @@ export default function BookDetail(props) {
         >
           <Text style={styles.deleteButton}>Elimina</Text>
         </TouchableOpacity>
-      </View>
-      <View style={{ marginTop: 10 }}>
-        <Button
-          title="Test"
-          style={{ margin: 50 }}
-          onPress={() => {
-            alert(JSON.stringify(book));
-          }}
-        ></Button>
       </View>
       {/* <ModelNotify
         title={dialogTitle}

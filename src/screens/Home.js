@@ -1,11 +1,11 @@
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
 import { StyleSheet, View, Text, StatusBar } from "react-native";
 import { Font } from "expo";
 import * as Constants from '../storage/Constants';
 import MaterialButtonNewBook from "../components/MaterialButtonNewBook";
 import SearchBar from "../components/SearchBar";
 
-function Home(props) {
+function Home(props) {  
   return (
     <View style={styles.container}>
       <View style={styles.biblioValeColumn}>

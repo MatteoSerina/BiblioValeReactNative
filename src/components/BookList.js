@@ -5,6 +5,7 @@ import {
   View,
   SafeAreaView,
   FlatList,
+  Text,
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
@@ -25,7 +26,7 @@ export default function BookList(props) {
 
   return (
     <SafeAreaView style={[styles.container, props.style]}>
-      {
+      {        
         <FlatList
           data={dataSource}
           renderItem={({ item }) => (
