@@ -24,8 +24,9 @@ export default function BookList(props) {
     setDataSource(bookList);
   }, );
 
-  return (
+  return (    
     <SafeAreaView style={[styles.container, props.style]}>
+      {(bookList.length == 0) && (<Text style={styles.nothingFound}>Nessun libro trovato</Text>)}
       {        
         <FlatList
           data={dataSource}
@@ -73,4 +74,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#f3f3f3",
   },
+  nothingFound:{
+    backgroundColor: Constants.WHITE,
+    height: "100%",
+    color: Constants.LIGHTBLUE,
+    fontSize: 56,
+    textAlign: "center"
+  }
 });
