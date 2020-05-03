@@ -12,8 +12,6 @@ import {
   Alert,
 } from "react-native";
 import * as Constants from "../storage/Constants";
-import GenrePicker from "../components/GenrePicker";
-import StatusPicker from "../components/StatusPicker";
 import BookFactsheet from '../components/BookFactsheet';
 // import ModelNotify from "../components/ModelNotify";
 

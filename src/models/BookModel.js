@@ -1,4 +1,5 @@
 import * as DbAdapter from "../storage/DbAdapter";
+import * as Constants from "../storage/Constants";
 
 export async function GetAllBooks() {
   try {
@@ -39,6 +40,15 @@ export async function CreateAuthor(book) {
     return await DbAdapter.CreateAuthor(book).then((response) =>
       response.json()
     );
+  } catch (error) {
+    console.warn(error);
+  }
+}
+
+export async function GetAuthorsHints() {
+  try {
+    let book = JSON.parse(JSON.stringify(Constants.EMPTY_BOOK));
+    return await DbAdapter.GetAuthors(book).then((response) => response.json());
   } catch (error) {
     console.warn(error);
   }
