@@ -43,6 +43,13 @@ export async function CreateAuthor(book) {
   return await fetch(queryString);
 }
 
+export async function DeleteBook(book) {
+  let queryString = new URL(Constants.DB_ENPOINT);
+  queryString.searchParams.append("fName", "deleteBook");
+  queryString.searchParams.append("id", book.id);
+  return await fetch(queryString);
+}
+
 export async function UpsertBook(book) {
   let queryString = new URL(Constants.DB_ENPOINT);
   if (book.id == "" || book.id === undefined) {

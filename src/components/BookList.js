@@ -79,6 +79,7 @@ const styles = StyleSheet.create({
     height: "100%",
     color: Constants.LIGHTBLUE,
     fontSize: 56,
-    textAlign: "center"
+    textAlign: "center",
+    paddingTop: 100
   }
 });

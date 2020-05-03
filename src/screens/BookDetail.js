@@ -12,28 +12,10 @@ import {
   Alert,
 } from "react-native";
 import * as Constants from "../storage/Constants";
-import BookFactsheet from '../components/BookFactsheet';
+import BookFactsheet from "../components/BookFactsheet";
 // import ModelNotify from "../components/ModelNotify";
 
 import * as BookModel from "../models/BookModel";
-
-function Capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-function GetSurname(str) {
-  try {
-    return str.split(",")[0].trim();
-  } catch (error) {
-    return "";
-  }
-}
-function GetName(str) {
-  try {
-    return str.split(",")[1].trim();
-  } catch (error) {
-    return "";
-  }
-}
 
 export default function BookDetail(props) {
   let currentBook = props.route.params.item;
@@ -44,11 +26,6 @@ export default function BookDetail(props) {
   useEffect(() => {
     setBook(currentBook);
   });
-
-  function UpdateAuthor(newText) {
-    setBook((book.surname = GetSurname(newText)));
-    setBook((book.name = GetName(newText)));
-  }
 
   async function CreateAuthor(book) {
     setLoading(true);
@@ -105,6 +82,7 @@ export default function BookDetail(props) {
           },
           {
             text: "No",
+            style: "cancel",
             onPress: () => {
               Alert.alert("Salvataggio interrotto", "Nuovo autore non creato");
               return false;
@@ -113,6 +91,45 @@ export default function BookDetail(props) {
         ]
       );
     }
+  }
+
+  async function DeleteBook(book) {
+    setLoading(true);
+    let result = await BookModel.DeleteBook(book);
+    console.log("result: " + JSON.stringify(book));
+    console.log("result: " + JSON.stringify(result));
+    setLoading(false);
+    if (result.status_id == "0") {
+      Alert.alert("Cancellazione libro", "Libro cancellato", [], { cancelable: true });
+      props.navigation.goBack();
+      return true;
+    }
+    Alert.alert("Errore", "Libro non cancellato");
+    return false;
+  }
+
+  async function Delete(book) {
+    Alert.alert(
+      "Cancellazione il libro",
+      "Vuoi cancellare il libro \"" + book.title + "\"?",
+      [
+        {
+          text: "Sì",
+          onPress: () => {
+            DeleteBook(book);
+          },
+          style: "default",
+        },
+        {
+          text: "No",
+          style: "destructive",
+          onPress: () => {
+            Alert.alert("Cancellazione interrotta", "Libro non cancellato");
+            return false;
+          },
+        },
+      ]
+    );
   }
 
   function ValidBook(book) {
@@ -132,18 +149,15 @@ export default function BookDetail(props) {
   }
 
   return (
-    <View style={[styles.container, props.style]}>      
+    <View style={[styles.container, props.style]}>
       <ScrollView style={[styles.container, props.style]}>
-        <BookFactsheet book={book}/>        
+        <BookFactsheet book={book} />
       </ScrollView>
       <View style={styles.footer}>
         <TouchableOpacity style={{ width: "40%" }} onPress={() => Save(book)}>
           <Text style={styles.saveButton}>Salva</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={{ width: "40%" }}
-          onPress={() => alert("Delete")}
-        >
+        <TouchableOpacity style={{ width: "40%" }} onPress={() => Delete(book)}>
           <Text style={styles.deleteButton}>Elimina</Text>
         </TouchableOpacity>
       </View>

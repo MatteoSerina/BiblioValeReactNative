@@ -36,7 +36,7 @@ export default function BookFactsheet(props) {
     setBook((book.name = GetName(newText)));
   }
   return (
-    <View>
+    <View style={{paddingTop: 30}}>
       <TextInput
         multiline
         style={styles.titleStyle}

@@ -35,6 +35,14 @@ export async function SaveBook(book) {
   }
 }
 
+export async function DeleteBook(book) {
+  try {
+    return await DbAdapter.DeleteBook(book).then((response) => response.json());
+  } catch (error) {
+    console.warn(error);
+  }
+}
+
 export async function CreateAuthor(book) {
   try {
     return await DbAdapter.CreateAuthor(book).then((response) =>
