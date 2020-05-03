@@ -9,6 +9,7 @@ import Home from "../screens/Home";
 import Library from '../screens/Library';
 import SearchBookResult from '../screens/SearchBookResult';
 import BookDetail from '../screens/BookDetail';
+import TestScreen from '../screens/TestScreen';
 
 const Drawer = createDrawerNavigator();
 
@@ -59,6 +60,12 @@ function CustomDrawerContent({ drawerPosition, navigation }) {
           navigation.closeDrawer();
         }}
       />
+      <DrawerItem
+        label="Test screen"
+        onPress={() => {
+          navigation.navigate("TestScreen");
+        }}
+      />
     </ScrollView>
   );
 }
@@ -72,6 +79,7 @@ export default function DrawerNavigator() {
         <Drawer.Screen name="Library" component={Library}/>
         <Drawer.Screen name="BookDetail" component={BookDetail}/>
         <Drawer.Screen name="SearchBookResult" component={SearchBookResult}/>
+        <Drawer.Screen name="TestScreen" component={TestScreen}/>
         {/* <Drawer.Screen name="Blog" component={Blog} /> */}
       </Drawer.Navigator>
     </NavigationContainer>

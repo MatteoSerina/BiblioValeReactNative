@@ -21,9 +21,13 @@ export const EMPTY_BOOK = {
     isbn13: "",
     name: "",
     notes: "",
-    status: "Abbandonato",
+    status: "Non letto",
     surname: "",
     title: "",
     year: "",
+    abstract: "",
+    coverURL: "",
+    cover: "",
+    thumbnail: ""
   };
 Object.freeze(EMPTY_BOOK);
