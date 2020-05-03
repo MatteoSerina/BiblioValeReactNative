@@ -3,7 +3,6 @@ import React from "react";
 import * as Constants from "../storage/Constants";
 
 const endpoint = "https://www.googleapis.com/books/v1/volumes?q=";
-const apiKey = "AIzaSyAsz4PRSi2OIlRiu_uXZ-xW--PxEgC1X9E";
 
 export async function GetBookByIsbn(isbn) {
   let queryString = endpoint + "isbn:" + isbn;
