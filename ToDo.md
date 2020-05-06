@@ -11,3 +11,4 @@
 - [ ] Persistenza copertina, quarta di copertina in DB (immagine originale e thumbnail ridimensionata e compressa)
 - [ ] Visualizzazione thumbnail salvata a DB nella lista libri
 - [ ] Sostituzione foto copertina con propria foto
+- [ ] Caratteri speciali in quarta di copertina
