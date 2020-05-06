@@ -58,7 +58,7 @@ function SearchBar(props) {
           marginTop: 2,
           fontSize: 18,
           flexGrow: 1,
-          width: "95%",
+          width: "100%",
           color: Constants.BLACK,
           backgroundColor: "transparent",
           borderColor: Constants.DARKGRAY,
@@ -108,18 +108,20 @@ const styles = StyleSheet.create({
     borderColor: Constants.LIGHTBLUE,
     borderWidth: 2,
     borderRadius: 10,
+    paddingRight: 10
   },
   searchableDropdown: {
     backgroundColor: "transparent",
     elevation: 1,
     width: "100%",
-    flexGrow: 1,
+    flexGrow: 0,
   },
   iconStyle: {
     color: Constants.BLACK,
     fontSize: 36,
     paddingRight: 8,
     paddingTop: 16,
+    marginRight: 8
   },
 });
 

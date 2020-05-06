@@ -1,12 +1,13 @@
 "use-strict";
 import React from "react";
 import * as Constants from "../storage/Constants";
+import * as Credentials from '../Credentials';
 
 const endpoint = "https://www.googleapis.com/books/v1/volumes?q=";
 
 export async function GetBookByIsbn(isbn) {
   let queryString = endpoint + "isbn:" + isbn;
-  queryString = queryString + "&key=" + apiKey;
+  queryString = queryString + "&key=" + Credentials.GOOGLE_API_KEY;
   try {
     let result = await fetch(queryString).then((response) => response.json());
     let book = await DataMapping(result.items[0]);

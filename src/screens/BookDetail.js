@@ -14,6 +14,7 @@ import {
 import * as Constants from "../storage/Constants";
 import BookFactsheet from "../components/BookFactsheet";
 // import ModelNotify from "../components/ModelNotify";
+import * as ExternalDataProvider from "../externalDataProviders/ExternalDataProvider";
 
 import * as BookModel from "../models/BookModel";
 
@@ -24,8 +25,56 @@ export default function BookDetail(props) {
   const [isLoading, setLoading] = useState(false);
 
   useEffect(() => {
-    setBook(currentBook);
-  });
+    fetchExternalData();
+  }, [props.route.params.item]);
+
+  async function fetchExternalData() {
+    setLoading(true);
+    let fetched = false;
+    if (currentBook.isbn13 != null && currentBook.isbn13 != "") {
+      const externalBook = await ExternalDataProvider.GetBookByIsbn(
+        currentBook.isbn13
+      );
+      const decoratedBook = DecorateBook(currentBook, externalBook);
+      setBook(decoratedBook);
+      fetched = true;
+    } else if (
+      (fetched =
+        false && currentBook.isbn10 != null && currentBook.isbn10 != "")
+    ) {
+      const externalBook = await ExternalDataProvider.GetBookByIsbn(
+        currentBook.isbn10
+      );
+      const decoratedBook = DecorateBook(currentBook, externalBook);
+      setBook(decoratedBook);
+      fetched = true;
+    } else {
+      setBook(currentBook);
+    }
+    setLoading(false);
+  }
+
+  function DecorateBook(storedBook, externalBook) {
+    const book = storedBook;
+
+    if (book.isbn10 === undefined || book.isbn10 == "")
+      book.isbn10 = externalBook.isbn10;
+    if (book.isbn13 === undefined || book.isbn13 == "")
+      book.isbn13 = externalBook.isbn13;
+    if (book.name === undefined || book.name == "")
+      book.name = externalBook.name;
+    if (book.surname === undefined || book.surname == "")
+      book.surname = externalBook.surname;
+    if (book.title === undefined || book.title == "")
+      book.title = externalBook.title;
+    if (book.year === undefined || book.year == "")
+      book.year = externalBook.year;
+    if (book.abstract === undefined || book.abstract == "")
+      book.abstract = externalBook.abstract;
+    if (book.coverURL === undefined || book.coverURL == "")
+      book.coverURL = externalBook.coverURL;
+    return book;
+  }
 
   async function CreateAuthor(book) {
     setLoading(true);
@@ -43,8 +92,6 @@ export default function BookDetail(props) {
   async function SaveBook(book) {
     setLoading(true);
     let result = await BookModel.SaveBook(book);
-    console.log("result: " + JSON.stringify(book));
-    console.log("result: " + JSON.stringify(result));
     setLoading(false);
     if (result.status_id == "0") {
       Alert.alert("Salvataggio", "Libro salvato", [], { cancelable: true });
@@ -96,11 +143,11 @@ export default function BookDetail(props) {
   async function DeleteBook(book) {
     setLoading(true);
     let result = await BookModel.DeleteBook(book);
-    console.log("result: " + JSON.stringify(book));
-    console.log("result: " + JSON.stringify(result));
     setLoading(false);
     if (result.status_id == "0") {
-      Alert.alert("Cancellazione libro", "Libro cancellato", [], { cancelable: true });
+      Alert.alert("Cancellazione libro", "Libro cancellato", [], {
+        cancelable: true,
+      });
       props.navigation.goBack();
       return true;
     }
@@ -111,7 +158,7 @@ export default function BookDetail(props) {
   async function Delete(book) {
     Alert.alert(
       "Cancellazione il libro",
-      "Vuoi cancellare il libro \"" + book.title + "\"?",
+      'Vuoi cancellare il libro "' + book.title + '"?',
       [
         {
           text: "Sì",
@@ -139,7 +186,8 @@ export default function BookDetail(props) {
       });
       return false;
     }
-    if (book.year != "" && (isNaN(book.year) || book.year.length != 4)) {
+    
+    if (isNaN(book.year) || ! (book.year.length == 4 || book.year == 0)) {
       Alert.alert("Errore validazione", "Controllare il valore dell'anno", [], {
         cancelable: true,
       });
@@ -150,9 +198,9 @@ export default function BookDetail(props) {
 
   return (
     <View style={[styles.container, props.style]}>
-      <ScrollView style={[styles.container, props.style]}>
+      <View style={[styles.factSheet]}>
         <BookFactsheet book={book} />
-      </ScrollView>
+      </View>
       <View style={styles.footer}>
         <TouchableOpacity style={{ width: "40%" }} onPress={() => Save(book)}>
           <Text style={styles.saveButton}>Salva</Text>
@@ -184,80 +232,17 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: Constants.WHITE,
     flexWrap: "nowrap",
-    elevation: 1,
+    overflow: "scroll",
     borderRadius: 2,
     borderColor: Constants.GRAY,
     borderWidth: 1,
-    overflow: "hidden",
     flexDirection: "column",
     flex: 1,
   },
-  cardBody: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  bodyContent: {
+  factSheet: {
+    overflow: "hidden",
+    flexDirection: "column",
     flex: 1,
-    padding: 16,
-    paddingTop: 24,
-  },
-  titleStyle: {
-    color: Constants.LIGHTBLUE,
-    paddingBottom: 12,
-    paddingTop: 12,
-    fontSize: 28,
-    alignSelf: "center",
-    textAlign: "center",
-    //   fontFamily: "roboto-regular"
-  },
-  authorStyle: {
-    color: Constants.BLACK,
-    opacity: 1,
-    fontSize: 24,
-    marginBottom: 5,
-    //   fontFamily: "roboto-regular",
-  },
-  mainInfoStyle: {
-    color: Constants.BLACK,
-    opacity: 1,
-    fontSize: 22,
-    fontStyle: "italic",
-    marginBottom: 5,
-    //   fontFamily: "roboto-regular",
-  },
-  pickerStyle: {
-    color: Constants.BLACK,
-    opacity: 1,
-    fontSize: 44,
-    fontStyle: "italic",
-    marginBottom: 5,
-    //   fontFamily: "roboto-regular",
-  },
-  keyValueStyle: {
-    flexDirection: "row",
-  },
-  secondaryInfoLabelStyle: {
-    color: Constants.BLACK,
-    opacity: 0.7,
-    fontSize: 14,
-    padding: 2,
-    width: "18%",
-    textAlignVertical: "bottom",
-  },
-  secondaryInfoInputStyle: {
-    color: Constants.BLACK,
-    opacity: 0.7,
-    fontSize: 14,
-    padding: 2,
-    borderBottomWidth: 1,
-    textAlignVertical: "bottom",
-    // fontFamily: "roboto-regular",
-  },
-  cardItemImagePlace: {
-    width: "50%",
-    backgroundColor: Constants.GRAY,
-    margin: 16,
-    alignSelf: "center",
   },
   footer: {
     flexDirection: "row",

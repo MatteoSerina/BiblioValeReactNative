@@ -1,9 +1,11 @@
 import React, { Component, useState, useEffect } from "react";
 import { StyleSheet, View, Text, Image, TextInput } from "react-native";
+import { Asset } from "expo-asset";
 import { Font } from "expo";
 import * as Constants from "../storage/Constants";
 import GenrePicker from "../components/GenrePicker";
 import StatusPicker from "../components/StatusPicker";
+import { ScrollView } from "react-native-gesture-handler";
 
 function Capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1);
@@ -36,7 +38,7 @@ export default function BookFactsheet(props) {
     setBook((book.name = GetName(newText)));
   }
   return (
-    <View style={{paddingTop: 30}}>
+    <View style={{ paddingTop: 10}}>
       <TextInput
         multiline
         style={styles.titleStyle}
@@ -47,7 +49,14 @@ export default function BookFactsheet(props) {
       </TextInput>
       <View style={styles.container}>
         <Image
-          source={require("../../assets/img/cover_not_found.png")}
+          source={{
+            uri:
+              book.coverURL === undefined
+                ? Asset.fromModule(
+                    require("../../assets/img/cover_not_found.png")
+                  ).uri
+                : book.coverURL,
+          }}
           style={styles.cardItemImagePlace}
         ></Image>
         <View style={styles.cardBody}>
@@ -111,6 +120,18 @@ export default function BookFactsheet(props) {
           </View>
         </View>
       </View>
+      {currentBook.abstract && (
+        <ScrollView style={styles.abstractContainer}>
+          <TextInput
+            multiline
+            autogrow={true}
+            style={styles.abstractStyle}
+            editable={false}
+          >
+            {currentBook.abstract}
+          </TextInput>
+        </ScrollView>
+      )}
     </View>
   );
 }
@@ -125,7 +146,17 @@ const styles = StyleSheet.create({
     margin: 5,
     overflow: "hidden",
     flexDirection: "row",
+    flexGrow: 1,
     alignItems: "flex-start",
+  },
+  abstractContainer: {
+    backgroundColor: Constants.WHITE,
+    elevation: 5,
+    borderRadius: 2,
+    borderColor: Constants.GRAY,
+    borderWidth: 1,
+    margin: 5,
+    maxHeight: "35%",
   },
   cardBody: {
     flexDirection: "row",
@@ -139,7 +170,12 @@ const styles = StyleSheet.create({
   },
   titleStyle: {
     color: Constants.LIGHTBLUE,
-    paddingBottom: 12,
+    elevation: 5,
+    borderRadius: 2,
+    borderColor: Constants.GRAY,
+    borderWidth: 1,
+    marginHorizontal: 5,
+    paddingVertical: 12,
     fontSize: 24,
     textAlign: "center",
   },
@@ -147,12 +183,15 @@ const styles = StyleSheet.create({
     color: Constants.BLACK,
     opacity: 0.9,
     fontSize: 22,
+    paddingLeft: 8,
+    width: "110%",
   },
   pickerStyle: {
     color: Constants.BLACK,
     fontSize: 25,
     fontStyle: "italic",
     marginBottom: 5,
+    width: "110%",
   },
   cardItemImagePlace: {
     width: "30%",
@@ -162,11 +201,10 @@ const styles = StyleSheet.create({
     backgroundColor: Constants.WHITE,
     marginLeft: 4,
   },
-  keyValueGroupStyle: {    
-  },
+  keyValueGroupStyle: {},
   keyValueStyle: {
     flexDirection: "row",
-    padding: 10
+    padding: 5,
   },
   secondaryInfoLabelStyle: {
     color: Constants.BLACK,
@@ -174,7 +212,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlignVertical: "bottom",
     justifyContent: "flex-start",
-    flex: 0.3,
+    flex: 0.35,
   },
   secondaryInfoInputStyle: {
     color: Constants.BLACK,
@@ -182,6 +220,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     textAlignVertical: "bottom",
     justifyContent: "flex-start",
-    flex: 0.6
+    flex: 0.7,
+  },
+  abstractStyle: {
+    color: Constants.BLACK,
+    opacity: 0.9,
+    fontSize: 18,
+    padding: 8,
+    fontStyle: "normal",
+    flexWrap: "nowrap",
   },
 });
