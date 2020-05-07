@@ -14,6 +14,12 @@ export async function SearchHint() {
   return await fetch(queryString);
 }
 
+export async function GetStats() {
+  let queryString = new URL(Constants.DB_ENPOINT);
+  queryString.searchParams.append("fName", "getStats");
+  return await fetch(queryString);
+}
+
 export async function SearchBook(searchString) {
   let queryString = new URL(Constants.DB_ENPOINT);
   queryString.searchParams.append("fName", "searchBook");
@@ -24,6 +30,13 @@ export async function SearchBook(searchString) {
 export async function GetAllGenres() {
   let queryString = new URL(Constants.DB_ENPOINT);
   queryString.searchParams.append("fName", "getAllGenres");
+  return await fetch(queryString);
+}
+
+export async function GetBooksByStatus(status) {
+  let queryString = new URL(Constants.DB_ENPOINT);
+  queryString.searchParams.append("fName", "getBooksByStatus");
+  queryString.searchParams.append("status", status);
   return await fetch(queryString);
 }
 

@@ -17,9 +17,27 @@ export async function SearchHint() {
   }
 }
 
+export async function GetStats() {
+  try {
+    return await DbAdapter.GetStats().then((response) => response.json());
+  } catch (error) {
+    console.warn(error);
+  }
+}
+
 export async function SearchBook(queryString) {
   try {
     return await DbAdapter.SearchBook(queryString).then((response) =>
+      response.json()
+    );
+  } catch (error) {
+    console.warn(error);
+  }
+}
+
+export async function GetBooksByStatus(status) {
+  try {
+    return await DbAdapter.GetBooksByStatus(status).then((response) =>
       response.json()
     );
   } catch (error) {
