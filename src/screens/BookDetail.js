@@ -11,9 +11,10 @@ import {
   ActivityIndicator,
   Alert,
 } from "react-native";
+import { BarCodeScanner } from "expo-barcode-scanner";
+import Icon from "react-native-vector-icons/Ionicons";
 import * as Constants from "../storage/Constants";
 import BookFactsheet from "../components/BookFactsheet";
-// import ModelNotify from "../components/ModelNotify";
 import * as ExternalDataProvider from "../externalDataProviders/ExternalDataProvider";
 
 import * as BookModel from "../models/BookModel";
@@ -23,10 +24,43 @@ export default function BookDetail(props) {
 
   const [book, setBook] = useState(currentBook);
   const [isLoading, setLoading] = useState(false);
+  const [hasPermission, setHasPermission] = useState(null);
+  const [isScanning, setIsScanning] = useState(false);
+  const [barcode, setBarcode] = useState();
 
   useEffect(() => {
+    chechHasPermissions();
     fetchExternalData();
   }, [props.route.params.item]);
+
+  async function chechHasPermissions() {
+    const { status } = await BarCodeScanner.requestPermissionsAsync();
+    setHasPermission(status === "granted");
+  }
+  const handleBarCodeScanned = ({ type, data }) => {
+    setIsScanning(false);
+    setBarcode(data);
+    // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+    Alert.alert(
+      "Scansione barcode",
+      "Vuoi aggiornare il libro in base al codice ISBN " + data + "?",
+      [
+        {
+          text: "Sì",
+          onPress: () => {            
+            setLoading(true);
+            ExternalDataProvider.GetBookByIsbn(data).then((result) => setBook(result));
+            setLoading(false);
+          },
+          style: "default",
+        },
+        {
+          text: "No",
+          style: "cancel",
+        },
+      ]
+    );
+  };
 
   async function fetchExternalData() {
     setLoading(true);
@@ -186,8 +220,8 @@ export default function BookDetail(props) {
       });
       return false;
     }
-    
-    if (isNaN(book.year) || ! (book.year.length == 4 || book.year == 0)) {
+
+    if (isNaN(book.year) || !(book.year.length == 4 || book.year == 0)) {
       Alert.alert("Errore validazione", "Controllare il valore dell'anno", [], {
         cancelable: true,
       });
@@ -202,11 +236,17 @@ export default function BookDetail(props) {
         <BookFactsheet book={book} />
       </View>
       <View style={styles.footer}>
-        <TouchableOpacity style={{ width: "40%" }} onPress={() => Save(book)}>
-          <Text style={styles.saveButton}>Salva</Text>
+        <TouchableOpacity style={{ width: "20%" }} onPress={() => Save(book)}>
+          <Icon name="md-save" style={styles.saveButton} />
         </TouchableOpacity>
-        <TouchableOpacity style={{ width: "40%" }} onPress={() => Delete(book)}>
-          <Text style={styles.deleteButton}>Elimina</Text>
+        <TouchableOpacity
+          style={{ width: "20%" }}
+          onPress={() => setIsScanning(true)}
+        >
+          <Icon name="md-barcode" style={styles.barcodeButton} />
+        </TouchableOpacity>
+        <TouchableOpacity style={{ width: "20%" }} onPress={() => Delete(book)}>
+          <Icon name="md-trash" style={styles.deleteButton} />
         </TouchableOpacity>
       </View>
       {/* <ModelNotify
@@ -223,6 +263,12 @@ export default function BookDetail(props) {
             color={Constants.LIGHTBLUE}
           />
         </View>
+      )}
+      {isScanning && (
+        <BarCodeScanner
+          onBarCodeScanned={!isScanning ? undefined : handleBarCodeScanned}
+          style={StyleSheet.absoluteFillObject}
+        />
       )}
     </View>
   );
@@ -247,7 +293,8 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 5,
+    paddingVertical: 5,
+    paddingHorizontal: 20,
   },
   saveButton: {
     borderColor: Constants.LIGHTBLUE,
@@ -257,7 +304,15 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: Constants.LIGHTBLUE,
     padding: 5,
-    marginLeft: 30,
+  },
+  barcodeButton: {
+    borderColor: Constants.TEAL,
+    borderWidth: 3,
+    borderRadius: 10,
+    fontSize: 24,
+    textAlign: "center",
+    color: Constants.TEAL,
+    padding: 5,
   },
   deleteButton: {
     borderColor: Constants.RED,
@@ -267,7 +322,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: Constants.RED,
     padding: 5,
-    marginRight: 30,
   },
   spinner: {
     position: "absolute",

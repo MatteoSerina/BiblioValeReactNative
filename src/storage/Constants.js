@@ -11,6 +11,7 @@ export const DARKGRAY = "#AAAAAA";
 export const BLACK =  "#616161";
 export const LIGHTBLUE = "rgba(74,144,226,1)";
 export const RED = "red";
+export const TEAL = "#63c8a5";
 
 // MODEL
 export const EMPTY_BOOK = {

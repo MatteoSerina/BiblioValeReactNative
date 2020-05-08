@@ -38,7 +38,7 @@ export default function BookFactsheet(props) {
     setBook((book.name = GetName(newText)));
   }
   return (
-    <View style={{ paddingTop: 10}}>
+    <View style={{ paddingTop: 10 }}>
       <TextInput
         multiline
         style={styles.titleStyle}
@@ -120,7 +120,7 @@ export default function BookFactsheet(props) {
           </View>
         </View>
       </View>
-      {currentBook.abstract && (
+      {currentBook.abstract ? (
         <ScrollView style={styles.abstractContainer}>
           <TextInput
             multiline
@@ -131,7 +131,7 @@ export default function BookFactsheet(props) {
             {currentBook.abstract}
           </TextInput>
         </ScrollView>
-      )}
+      ) : null}
     </View>
   );
 }

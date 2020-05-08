@@ -10,7 +10,7 @@
     "orientation": "portrait",
     "icon": "./assets/bibliovaleIcon.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/bibliovaleSplash.png",
       "resizeMode": "contain",
       "backgroundColor": "#FEFEFE"
     },

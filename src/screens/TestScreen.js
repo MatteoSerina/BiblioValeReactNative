@@ -8,42 +8,44 @@ import {
   Button,
   ScrollView,
 } from "react-native";
+import { BarCodeScanner } from "expo-barcode-scanner";
 import * as Constants from "../storage/Constants";
-import * as OPACDataProvider from "../externalDataProviders/OPACDataProvider";
-import * as GoogleDataProvider from "../externalDataProviders/GoogleDataProvider";
 
 export default function TestScreen({ navigation }) {
-  const [isbn, setIsbn] = useState("9788817142069");
-  const [OPACbook, setOPACBook] = useState(
-    JSON.parse(JSON.stringify(Constants.EMPTY_BOOK))
-  );
-  const [googleBook, setGoogleBook] = useState(
-    JSON.parse(JSON.stringify(Constants.EMPTY_BOOK))
-  );
+  const [hasPermission, setHasPermission] = useState(null);
+  const [scanned, setScanned] = useState(false);
+  const [barcode, setBarcode] = useState();
 
-  async function SearchBook() {
-    let opacBook = await OPACDataProvider.GetBookByIsbn(isbn);
-    // console.log('OPAC: ' + JSON.stringify(opacBook));
-    setOPACBook(opacBook);
-    let googleBook = await GoogleDataProvider.GetBookByIsbn(isbn);
-    setGoogleBook(googleBook);
-    console.log('Google: ' + JSON.stringify(googleBook));
+  useEffect(() => {
+    (async () => {
+      const { status } = await BarCodeScanner.requestPermissionsAsync();
+      setHasPermission(status === "granted");
+    })();
+  }, []);
+
+  const handleBarCodeScanned = ({ type, data }) => {
+    setScanned(true);
+    setBarcode(data);
+    alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+  };
+
+  if (hasPermission === null) {
+    return <Text>Requesting for camera permission</Text>;
+  }
+  if (hasPermission === false) {
+    return <Text>No access to camera</Text>;
   }
 
   return (
     <View style={styles.container}>
-      <TextInput
-        style={styles.isbn}
-        onChangeText={(newText) => setIsbn(newText)}
-      >
-        {isbn}
-      </TextInput>
-      <Button
-        title="Cerca"
-        style={styles.searchButton}
-        onPress={() => SearchBook()}
-      />
-      <Text>{googleBook.abstract}</Text>
+      <Text style={styles.barcode}>{barcode}</Text>
+      {!scanned && <BarCodeScanner
+        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+        style={StyleSheet.absoluteFillObject}
+      />}
+      {scanned && (
+        <Button title={"Tap to Scan Again"} onPress={() => setScanned(false)} />
+      )}
     </View>
   );
 }
@@ -52,29 +54,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "column",
-    // justifyContent: "center",
-    // alignItems: "center",
     backgroundColor: Constants.WHITE,
   },
-  providerContainer: {
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
-    backgroundColor: Constants.WHITE,
-  },
-  providerName: { fontSize: 32, marginLeft: 8 },
-  cover: {
-    borderWidth: 1,
-    // width: "30%",
-    // height: "100%",
-    flex: 0.3,
-    resizeMode: "contain",
-    backgroundColor: Constants.WHITE,
-    marginLeft: 16,
-    marginTop: 4,
-  },
-  abstract: { borderWidth: 1, marginLeft: 16, width: "90%", marginTop: 4 },
-  isbn: { borderWidth: 1, width: "90%", margin: 16 },
+  barcode: { borderWidth: 1, width: "90%", margin: 16 },
   searchButton: {},
 });
