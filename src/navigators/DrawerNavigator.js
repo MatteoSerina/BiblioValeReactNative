@@ -12,6 +12,7 @@ import SearchBookResult from '../screens/SearchBookResult';
 import BookDetail from '../screens/BookDetail';
 import TestScreen from '../screens/TestScreen';
 import Statistics from '../screens/Statistics';
+import StatList from '../screens/StatsList';
 
 const Drawer = createDrawerNavigator();
 
@@ -83,6 +84,7 @@ export default function DrawerNavigator() {
         <Drawer.Screen name="BookDetail" component={BookDetail}/>
         <Drawer.Screen name="SearchBookResult" component={SearchBookResult}/>
         <Drawer.Screen name="Statistics" component={Statistics}/>
+        <Drawer.Screen name="StatList" component={StatList}/>
         <Drawer.Screen name="TestScreen" component={TestScreen}/>
       </Drawer.Navigator>
     </NavigationContainer>

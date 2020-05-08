@@ -9,35 +9,30 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import * as Constants from "../storage/Constants";
 
 import * as BookModel from "../models/BookModel";
 import BookList from "../components/BookList";
 
-export default function Library({ navigation }) {
+export default function StatList(props) {
+  const navigation = useNavigation();
   const [dataSource, setDataSource] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
       setIsLoading(true);
-      BookModel.GetAllBooks()
-        .then((responseJson) => {
-          setDataSource(responseJson);
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
+      refreshData();
       setIsLoading(false);
     });
 
     // Return the function to unsubscribe from the event so it gets removed on unmount
     return unsubscribe;
-  }, []);
+  },);
 
   function refreshData() {
-    BookModel.GetAllBooks()
+    BookModel.GetBooksByStatus(props.route.params.item.status)
       .then((responseJson) => {
         setDataSource(responseJson);
         setIsLoading(false);

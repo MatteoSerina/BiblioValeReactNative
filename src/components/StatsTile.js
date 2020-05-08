@@ -20,7 +20,7 @@ export default function StatsTile(props) {
           marginVertical: 0.5 * tileMargin,
         },
       ]}
-    >
+    >     
       <Text
         style={[
           styles.counter,
@@ -31,10 +31,16 @@ export default function StatsTile(props) {
       >
         {currentStat.count}
       </Text>
-      <Text style={[styles.status,
+      <Text
+        style={[
+          styles.status,
           currentStat.status.toUpperCase() == "TOTALE"
             ? styles.totalStatus
-            : styles.baseStatus,]}>{Capitalize(currentStat.status)}</Text>
+            : styles.baseStatus,
+        ]}
+      >
+        {Capitalize(currentStat.status)}
+      </Text>
     </View>
   );
 }
@@ -58,14 +64,14 @@ const styles = StyleSheet.create({
     fontSize: 64,
     textAlign: "left",
     paddingLeft: 10,
-    flex: 0.7,
+    flex: 0.8,
   },
   baseCounter: {
     fontStyle: "normal",
   },
   totalCounter: {
     fontStyle: "italic",
-    fontSize: 72
+    fontSize: 72,
   },
   status: {
     color: Constants.BLACK,
@@ -80,6 +86,6 @@ const styles = StyleSheet.create({
   },
   totalStatus: {
     fontStyle: "italic",
-    fontSize: 26
+    fontSize: 26,
   },
 });
