@@ -1,8 +1,9 @@
 'use-strict'
 
 // DATABASE
-export const DB_URL = 'http://192.168.1.101/bibliovale_test';
-export const DB_ENPOINT = DB_URL + '/BiblioValeApi.php';
+//export const DB_URL = 'http://192.168.1.101/bibliovale_test';
+export const DB_URL_LSKEY = "endpoint";
+export const DB_API = '/BiblioValeApiV2.php';
 
 // COLORS
 export const WHITE = "#FEFEFE";

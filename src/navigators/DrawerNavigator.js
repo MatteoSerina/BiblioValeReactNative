@@ -13,6 +13,7 @@ import BookDetail from '../screens/BookDetail';
 import TestScreen from '../screens/TestScreen';
 import Statistics from '../screens/Statistics';
 import StatList from '../screens/StatsList';
+import Configurtion from '../screens/Configuration';
 
 const Drawer = createDrawerNavigator();
 
@@ -61,7 +62,7 @@ function CustomDrawerContent({ drawerPosition, navigation }) {
         label="Configurazione"
         labelStyle={styles.menuItem}
         onPress={() => {
-          navigation.closeDrawer();
+          navigation.navigate("Configuration");
         }}
       />
       {/* <DrawerItem
@@ -85,6 +86,7 @@ export default function DrawerNavigator() {
         <Drawer.Screen name="SearchBookResult" component={SearchBookResult}/>
         <Drawer.Screen name="Statistics" component={Statistics}/>
         <Drawer.Screen name="StatList" component={StatList}/>
+        <Drawer.Screen name="Configuration" component={Configurtion}/>
         {/* <Drawer.Screen name="TestScreen" component={TestScreen}/> */}
       </Drawer.Navigator>
     </NavigationContainer>

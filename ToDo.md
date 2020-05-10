@@ -4,7 +4,7 @@
 - [x] Schermata statistiche con navigazione per stato libro
 - [x] Raccolta dati (copertina, quarta di copertina) da servizi esterni e presentazione in factsheet
 - [x] Scansione barcode
-- [ ] Gestione configurazione
+- [x] Gestione configurazione
 - [x] Aggiornamento splashscreen
 
 ## WP2
