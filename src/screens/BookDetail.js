@@ -12,6 +12,7 @@ import {
   Alert,
 } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
+import { Audio } from 'expo-av';
 import Icon from "react-native-vector-icons/Ionicons";
 import * as Constants from "../storage/Constants";
 import BookFactsheet from "../components/BookFactsheet";
@@ -37,7 +38,18 @@ export default function BookDetail(props) {
     const { status } = await BarCodeScanner.requestPermissionsAsync();
     setHasPermission(status === "granted");
   }
+  async function playBeep(){    
+    const soundObject = new Audio.Sound();
+    try {
+      await soundObject.loadAsync(require('../../assets/sound/beep.mp3'));
+      await soundObject.playAsync();
+      // Your sound is playing!
+    } catch (error) {
+      console.log(error);
+    }
+  }
   const handleBarCodeScanned = ({ type, data }) => {
+    playBeep();
     setIsScanning(false);
     setBarcode(data);
     // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
