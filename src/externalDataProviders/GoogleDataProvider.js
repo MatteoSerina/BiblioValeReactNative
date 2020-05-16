@@ -50,14 +50,16 @@ function ISBN13DataAdatper(googleVolumeInfo) {
 }
 function GetSurname(googleVolumeInfo) {
   try {
-    return googleVolumeInfo.authors[0].split(" ")[1].trim();
+    var authorWords = googleVolumeInfo.authors[0].split(' ').length;
+    return googleVolumeInfo.authors[0].split(' ')[authorWords - 1].trim();
   } catch (error) {
     return "";
   }
 }
 function GetName(googleVolumeInfo) {
   try {
-    return googleVolumeInfo.authors[0].split(" ")[0].trim();
+    var authorWords = googleVolumeInfo.authors[0].split(' ').length;
+    return googleVolumeInfo.authors[0].split(' ').slice(0, authorWords-1).join(' ').trim();
   } catch (error) {
     return "";
   }
