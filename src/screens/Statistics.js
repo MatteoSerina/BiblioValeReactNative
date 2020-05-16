@@ -23,11 +23,16 @@ export default function Statistics(props) {
   const { width } = Dimensions.get("window");
   const tileDimensions = calcTileDimensions(width, 2); // -> change this number and see!
 
-  useEffect(() => {
-    setIsLoading(true);
-    refreshData()
-    setIsLoading(false);
-  },[]);
+   useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      setIsLoading(true);
+      refreshData();
+      setIsLoading(false);
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, []);
   
   function refreshData() {
     BookModel.GetStats()
