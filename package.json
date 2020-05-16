@@ -23,6 +23,7 @@
     "react-native-cheerio": "^1.0.0-rc.4",
     "react-native-dropdown-autocomplete": "^1.0.18",
     "react-native-gesture-handler": "~1.6.0",
+    "react-native-modal-filter-picker": "^2.0.0",
     "react-native-popup-dialog": "^0.18.3",
     "react-native-reanimated": "~1.7.0",
     "react-native-safe-area-context": "0.7.3",

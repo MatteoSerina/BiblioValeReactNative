@@ -65,12 +65,12 @@ function CustomDrawerContent({ drawerPosition, navigation }) {
           navigation.navigate("Configuration");
         }}
       />
-      {/* <DrawerItem
+      <DrawerItem
         label="Test screen"
         onPress={() => {
           navigation.navigate("TestScreen");
         }}
-      /> */}
+      />
     </ScrollView>
   );
 }
@@ -87,7 +87,7 @@ export default function DrawerNavigator() {
         <Drawer.Screen name="Statistics" component={Statistics}/>
         <Drawer.Screen name="StatList" component={StatList}/>
         <Drawer.Screen name="Configuration" component={Configurtion}/>
-        {/* <Drawer.Screen name="TestScreen" component={TestScreen}/> */}
+        <Drawer.Screen name="TestScreen" component={TestScreen}/>
       </Drawer.Navigator>
     </NavigationContainer>
   );
