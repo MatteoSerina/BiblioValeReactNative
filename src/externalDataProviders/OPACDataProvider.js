@@ -33,7 +33,7 @@ function DataMapping(OPACbook) {
 }
 
 function ISBNDataAdatper(OPACIsbn) {
-  return OPACIsbn.replace("-", "");
+  return OPACIsbn.replace(/-/g,'');
 }
 function GetSurname(OPACAuthor) {
   try {
@@ -51,7 +51,7 @@ function GetName(OPACAuthor) {
 }
 function GetYear(OPACPubblicazione) {
   try {
-    return OPACPubblicazione.split(",")[1].trim();
+    return OPACPubblicazione.split(",")[1].slice(-4).trim();
   } catch (error) {
     return "";
   }
