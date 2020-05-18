@@ -25,6 +25,12 @@ export async function SearchHint() {
   return await fetch(queryString);
 }
 
+export async function AuthorsHint() {
+  let queryString = new URL(await GetEndpoint());
+  queryString.searchParams.append("fName", "authorsHint");
+  return await fetch(queryString);
+}
+
 export async function GetStats() {
   let queryString = new URL(await GetEndpoint());
   queryString.searchParams.append("fName", "getStats");

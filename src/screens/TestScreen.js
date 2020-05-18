@@ -8,107 +8,166 @@ import {
   Button,
   ScrollView,
   TouchableOpacity,
+  Modal,
 } from "react-native";
-import ModalFilterPicker from "react-native-modal-filter-picker";
+import SearchableDropdown from "react-native-searchable-dropdown";
+import Icon from "react-native-vector-icons/Octicons";
 import * as Constants from "../storage/Constants";
+import * as BookModel from "../models/BookModel";
 
 export default function TestScreen({ navigation }) {
-  const [visible, setVisible] = useState(false);
-  const [picked, setPicked] = useState("");
-  useEffect(() => {}, []);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [value, setValue] = useState("");
+  const [hints, setHints] = useState([]);
 
-  const options = [
-    {
-      key: "kenya",
-      label: "Kenya",
-    },
-    {
-      key: "uganda",
-      label: "Uganda",
-    },
-    {
-      key: "libya",
-      label: "Libya",
-    },
-    {
-      key: "morocco",
-      label: "Morocco",
-    },
-    {
-      key: "estonia",
-      label: "Estonia",
-    },
-  ];
+  // const data = [
+  //   { name: "Ram", email: "ram@gmail.com", age: 23 },
+  //   { name: "Shyam", email: "shyam23@gmail.com", age: 28 },
+  //   { name: "John", email: "john@gmail.com", age: 33 },
+  //   { name: "Bob", email: "bob32@gmail.com", age: 41 },
+  //   { name: "Ram", email: "ram@gmail.com", age: 23 },
+  //   { name: "Shyam", email: "shyam23@gmail.com", age: 28 },
+  //   { name: "John", email: "john@gmail.com", age: 33 },
+  //   { name: "Bob", email: "bob32@gmail.com", age: 41 },
+  //   { name: "Ram", email: "ram@gmail.com", age: 23 },
+  //   { name: "Shyam", email: "shyam23@gmail.com", age: 28 },
+  //   { name: "John", email: "john@gmail.com", age: 33 },
+  //   { name: "Bob", email: "bob32@gmail.com", age: 41 },
+  //   { name: "Ram", email: "ram@gmail.com", age: 23 },
+  //   { name: "Shyam", email: "shyam23@gmail.com", age: 28 },
+  //   { name: "John", email: "john@gmail.com", age: 33 },
+  //   { name: "Bob", email: "bob32@gmail.com", age: 41 },
+  // ];
 
-  function onShow() {
-    setVisible(true);
-  }
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      BookModel.AuthorsHint()
+        .then((responseJson) => {
+          setHints(responseJson);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    });
 
-  function onSelect(picked) {
-    setPicked(picked);
-    setVisible(false);
-  }
-
-  function onCancel() {
-    setVisible(false);
-  }
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, []);
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity style={styles.buttonContainer} onPress={() => onShow()}>
-        <Text style={styles.button}>Select country</Text>
-      </TouchableOpacity>
-      <Text style={styles.picked}>Selected: {picked === undefined ? "" : picked.label}</Text>
-      <ModalFilterPicker
-        visible={visible}
-        overlayStyle={styles.overlayStyle}
-        listContainerStyle={styles.listContainerStyle}
-        placeholderText="Cognome, nome"
-        cancelButtonText="Annulla"
-        noResultsText="Autore inesistente"
-        onSelect={(pickedVal) => onSelect(pickedVal)}
-        onCancel={() => onCancel()}
-        options={options}
-      />
+    <View>
+       <View style={{ marginTop: 30 }}>
+        <Text
+          style={{
+            fontSize: 24,
+            alignSelf: "center",
+            borderWidth: 1,
+            padding: 15,
+          }}
+          onPress={()=>setModalVisible(true)}
+        >
+          {value}
+        </Text>
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={modalVisible}
+      >
+        <View style={styles.modalContainer}>
+          <SearchableDropdown
+            style={styles.searchableDropdown}
+            onTextChange={(text) => setValue(text)}
+            //On text change listner on the searchable input
+            onItemSelect={(item) => {
+              setValue(item.name);
+              setModalVisible(false);
+            }}
+            //onItemSelect called after the selection from the dropdown
+            containerStyle={{ padding: 5, flexGrow: 1, width: "90%" }}
+            //suggestion container style
+            textInputStyle={{
+              //inserted text style
+              paddingLeft: 12,
+              fontSize: 24,
+              flexGrow: 1,
+              color: Constants.BLACK,
+              backgroundColor: "transparent",
+            }}
+            itemStyle={{
+              //single dropdown item style
+              padding: 10,
+              marginTop: 2,
+              fontSize: 18,
+              flexGrow: 1,
+              width: "100%",
+              color: Constants.BLACK,
+              backgroundColor: "transparent",
+              borderColor: Constants.DARKGRAY,
+              borderWidth: 1,
+              borderRadius: 10,
+            }}
+            itemTextStyle={{
+              //single dropdown item's text style
+              color: Constants.BLACK,
+            }}
+            itemsContainerStyle={{
+              //items container style you can pass maxHeight
+              //to restrict the items dropdown hieght
+              maxHeight: "90%",
+            }}
+            items={hints}
+            //mapping of item array
+            // defaultIndex={2}
+            //default selected item index
+            placeholder="Cognome, Nome"
+            //place holder for the search input
+            resetValue={false}
+            //reset textInput Value with true and false state
+            underlineColorAndroid="transparent"
+            //To remove the underline from the android input
+          />
+          <Icon
+            name="check"
+            style={styles.iconStyle}
+            onPress={() => {
+              setModalVisible(false);
+            }}
+          ></Icon>
+        </View>
+      </Modal>
+      {/* <Button title="Show modal" onPress={() => setModalVisible(true)} /> */}     
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: "column",
-    backgroundColor: Constants.WHITE,
-  },
-  barcode: { borderWidth: 1, width: "90%", margin: 16 },
-  button: {
-    fontSize: 40,
-    textAlign: "center"
-  },
-  buttonContainer: {
-    justifyContent: "center",
-    height: "20%",
-    width: "50%",
-    alignSelf: "center",
-    textAlign: "center",
-    alignContent: "center",
-    borderWidth: 2,
-    margin: 30,
-  },
-  picked:{
-    margin:30,
-    fontSize: 20
-  },
-  overlayStyle:{
-    margin: 30,
+  modalContainer: {
+    flexDirection: "row",
     width: "80%",
-    height: "80%",
+    maxHeight: "90%",
+    minHeight: "10%",
+    marginTop: "10%",
+    alignSelf: "center",
+    justifyContent: "space-between",
+    backgroundColor: Constants.WHITE,
+    opacity: 1,
+    borderColor: Constants.LIGHTBLUE,
     borderWidth: 2,
+    borderRadius: 10,
+    paddingRight: 10,
   },
-  listContainerStyle:{
-    borderWidth: 3,
+  searchableDropdown: {
+    backgroundColor: "transparent",
     elevation: 1,
-    flex: 1,
-    
-  }
+    width: "100%",
+    flexGrow: 0,
+  },
+  iconStyle: {
+    color: Constants.BLACK,
+    fontSize: 36,
+    paddingRight: 8,
+    paddingTop: 8,
+    marginRight: 8,
+  },
 });

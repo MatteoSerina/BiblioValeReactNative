@@ -17,6 +17,14 @@ export async function SearchHint() {
   }
 }
 
+export async function AuthorsHint() {
+  try {
+    return await DbAdapter.AuthorsHint().then((response) => response.json());
+  } catch (error) {
+    console.warn(error);
+  }
+}
+
 export async function GetStats() {
   try {
     return await DbAdapter.GetStats().then((response) => response.json());
