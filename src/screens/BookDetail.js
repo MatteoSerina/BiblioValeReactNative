@@ -1,13 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useDebugValue } from "react";
 import {
   StyleSheet,
-  ScrollView,
   View,
-  Text,
-  Image,
-  TextInput,
   TouchableOpacity,
-  Button,
   ActivityIndicator,
   Alert,
 } from "react-native";
@@ -25,9 +20,9 @@ export default function BookDetail(props) {
 
   const [book, setBook] = useState(currentBook);
   const [isLoading, setLoading] = useState(false);
-  const [hasPermission, setHasPermission] = useState(null);
+  const [, setHasPermission] = useState(null);
   const [isScanning, setIsScanning] = useState(false);
-  const [barcode, setBarcode] = useState();
+  const [, setBarcode] = useState();
 
   useEffect(() => {
     chechHasPermissions();
@@ -48,14 +43,22 @@ export default function BookDetail(props) {
       console.log(error);
     }
   }
-  const handleBarCodeScanned = ({ type, data }) => {
+  const handleBarCodeScanned = ({ data }) => {
     playBeep();
     setIsScanning(false);
     setBarcode(data);
-    // alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+    
+    if(book.id != undefined && book.id != ""){
+      let updatedBook = JSON.parse(JSON.stringify(book));
+      updatedBook.isbn10 = data;
+      updatedBook.isbn13 = data;
+      setBook(updatedBook);
+      return;
+    }
+
     Alert.alert(
       "Scansione barcode",
-      "Vuoi aggiornare il libro in base al codice ISBN " + data + "?",
+      "Vuoi creare il libro in base al codice ISBN " + data + "?",
       [
         {
           text: "Sì",
