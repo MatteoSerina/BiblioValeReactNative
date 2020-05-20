@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import * as Constants from "../storage/Constants";
+import { expo } from "../../app.json";
 
 async function storeData(key, value) {
   try {
@@ -46,26 +47,57 @@ export default function Configuration({ navigation }) {
     return unsubscribe;
   }, []);
 
-  function SaveData(){
-    storeData(Constants.DB_URL_LSKEY,endpoint);
+  function SaveData() {
+    storeData(Constants.DB_URL_LSKEY, endpoint);
     Alert.alert("Configurazione", "Configurazioni salvate");
   }
 
   return (
     <View style={styles.container}>
-      <View style={{flex: 1}}>
-      <View style={styles.configParameter}>
-        <Text style={styles.key}>Endpoint:</Text>
-        <TextInput
-          style={styles.value}
-          placeholder="Endpoint URL"
-          onChangeText={(newText) => setEndpoint(newText)}
+      <View style={{ flex: 1 }}>
+        <View style={styles.configParameter}>
+          <Text style={styles.key}>Endpoint:</Text>
+          <TextInput
+            style={styles.value}
+            placeholder="Endpoint URL"
+            multiline={true}
+            onChangeText={(newText) => setEndpoint(newText)}
+          >
+            {endpoint}
+          </TextInput>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            marginHorizontal: 10,
+            marginVertical: 10,
+            alignSelf: "flex-end",
+          }}
         >
-          {endpoint}
-        </TextInput>
+          <Text
+            style={{
+              fontSize: 18,
+              color: Constants.BLACK,
+              fontStyle: "italic",
+            }}
+          >
+            Versione:{" "}
+          </Text>
+          <Text
+            style={{
+              fontSize: 18,
+              color: Constants.BLACK,
+              fontStyle: "italic",
+            }}
+          >
+            {expo.version}
+          </Text>
+        </View>
       </View>
-      </View>
-      <TouchableOpacity style={styles.saveButtonContainer} onPress={() => SaveData()}>
+      <TouchableOpacity
+        style={styles.saveButtonContainer}
+        onPress={() => SaveData()}
+      >
         <Icon name="md-save" style={styles.saveButton} />
       </TouchableOpacity>
     </View>
@@ -90,15 +122,15 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   value: {
-    color: console.BLACK,
+    color: Constants.BLACK,
     fontSize: 20,
     padding: 5,
   },
-  saveButtonContainer:{
+  saveButtonContainer: {
     justifyContent: "center",
     width: "33%",
-    marginLeft:"33%",
-    flex:0.15
+    marginLeft: "33%",
+    flex: 0.15,
   },
   saveButton: {
     borderColor: Constants.LIGHTBLUE,

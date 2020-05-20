@@ -43,6 +43,7 @@ function SearchBar(props) {
         }}
         //onItemSelect called after the selection from the dropdown
         containerStyle={{ padding: 5, flexGrow: 1, width: "90%" }}
+        textInputProps={{multiline:true}}
         //suggestion container style
         textInputStyle={{
           //inserted text style

@@ -6,9 +6,9 @@
 - [x] Scansione barcode
 - [x] Gestione configurazione
 - [x] Aggiornamento splashscreen
+- [x] Dropdown con suggerimenti su autore nella scheda libro
 
 ## WP2
-- [ ] Dropdown con suggerimenti su autore nella scheda libro
 - [ ] Caratteri speciali in quarta di copertina
 - [ ] Persistenza copertina, quarta di copertina in DB (immagine originale e thumbnail ridimensionata e compressa)
 - [ ] Sostituzione foto copertina con propria foto

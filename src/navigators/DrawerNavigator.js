@@ -65,12 +65,12 @@ function CustomDrawerContent({ drawerPosition, navigation }) {
           navigation.navigate("Configuration");
         }}
       />
-      <DrawerItem
+      {/* <DrawerItem
         label="Test screen"
         onPress={() => {
           navigation.navigate("TestScreen");
         }}
-      />
+      /> */}
     </ScrollView>
   );
 }
