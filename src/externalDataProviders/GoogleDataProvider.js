@@ -1,7 +1,9 @@
 "use-strict";
 import React from "react";
 import * as Constants from "../storage/Constants";
-import * as Credentials from '../Credentials';
+import * as Credentials from "../Credentials";
+import axios from "axios";
+import base64 from 'react-native-base64'
 
 const endpoint = "https://www.googleapis.com/books/v1/volumes?q=";
 
@@ -50,16 +52,20 @@ function ISBN13DataAdatper(googleVolumeInfo) {
 }
 function GetSurname(googleVolumeInfo) {
   try {
-    var authorWords = googleVolumeInfo.authors[0].split(' ').length;
-    return googleVolumeInfo.authors[0].split(' ')[authorWords - 1].trim();
+    var authorWords = googleVolumeInfo.authors[0].split(" ").length;
+    return googleVolumeInfo.authors[0].split(" ")[authorWords - 1].trim();
   } catch (error) {
     return "";
   }
 }
 function GetName(googleVolumeInfo) {
   try {
-    var authorWords = googleVolumeInfo.authors[0].split(' ').length;
-    return googleVolumeInfo.authors[0].split(' ').slice(0, authorWords-1).join(' ').trim();
+    var authorWords = googleVolumeInfo.authors[0].split(" ").length;
+    return googleVolumeInfo.authors[0]
+      .split(" ")
+      .slice(0, authorWords - 1)
+      .join(" ")
+      .trim();
   } catch (error) {
     return "";
   }
@@ -73,12 +79,19 @@ function GetYear(googleVolumeInfo) {
 }
 async function GetAbstract(googleVolumeInfo) {
   const infoPageURL = googleVolumeInfo.infoLink;
-  try {
-    const infoPage = await fetch(infoPageURL);
-    const htmlString = await infoPage.text();
+  try {    
+    const infoPageBinary = await axios.request({
+      method: "GET",
+      url: infoPageURL,
+      responseType: "arraybuffer",
+      reponseEncoding: "binary",
+    });
+    const infoPage = base64.decode(infoPageBinary.request._response);
+
     const cheerio = require("react-native-cheerio");
-    const $ = cheerio.load(htmlString, { decodeEntities: true });
+    const $ = cheerio.load(infoPage, { decodeEntities: false });
     const synopsisText = await $("#synopsistext").html();
+
     return synopsisText;
   } catch (error) {
     return "";

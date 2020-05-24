@@ -78,7 +78,7 @@ export default function BookFactsheet(props) {
   }
 
   return (
-    <View style={{ paddingTop: 10 }}>
+    <View style={{ flex: 1, paddingTop: 10 }}>
       <TextInput
         multiline
         style={styles.titleStyle}
@@ -168,7 +168,7 @@ export default function BookFactsheet(props) {
         <ScrollView style={styles.abstractContainer}>
           <TextInput
             multiline
-            autogrow={true}
+            autogrow={false}
             style={styles.abstractStyle}
             editable={false}
           >
@@ -253,7 +253,6 @@ const styles = StyleSheet.create({
     margin: 5,
     overflow: "hidden",
     flexDirection: "row",
-    flexGrow: 1,
     alignItems: "flex-start",
   },
   abstractContainer: {
@@ -263,7 +262,6 @@ const styles = StyleSheet.create({
     borderColor: Constants.GRAY,
     borderWidth: 1,
     margin: 5,
-    maxHeight: "35%",
   },
   cardBody: {
     flexDirection: "row",

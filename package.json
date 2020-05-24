@@ -20,6 +20,7 @@
     "react": "~16.9.0",
     "react-dom": "~16.9.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-37.0.1.tar.gz",
+    "react-native-base64": "^0.0.2",
     "react-native-cheerio": "^1.0.0-rc.4",
     "react-native-dropdown-autocomplete": "^1.0.18",
     "react-native-gesture-handler": "~1.6.0",
